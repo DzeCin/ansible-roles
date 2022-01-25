@@ -1,0 +1,6 @@
+Testing on azure by creating 2 VMs and applying ansible script
+
+
+Usage:
+
+./exec.sh [--rm] (set --rm if you want to delete azure infrastructure after testing)

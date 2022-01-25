@@ -1,4 +1,4 @@
-- hosts: [vms]
+- hosts: all
   become: true
   vars: 
     packages:
