@@ -1,0 +1,28 @@
+---
+# tasks file for servInit
+- name: Upgrade the OS (apt-get dist-upgrade)
+  become: true
+  apt:
+      update_cache: yes
+      upgrade: dist
+  when: ansible_os_family == "Debian"
+
+- name: Upgrade the OS (apt-get dist-upgrade)
+  become: true
+  yum:
+    update_cache: yes
+    name: '*'
+    state: latest
+  when: ansible_os_family == "RedHat"
+
+- name: Installing packages
+  apt:
+    name: "{{ packages }}"
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: Installing packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+  when: ansible_os_family == "RedHat"

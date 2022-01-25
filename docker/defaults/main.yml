@@ -1,0 +1,8 @@
+---
+# defaults file for docker
+
+# A list of users who will be added to the docker group.
+docker_users: []
+
+# Docker daemon options as a dict
+docker_daemon_options: {}

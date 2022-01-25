@@ -1,0 +1,12 @@
+---
+# tasks file for checks
+- name: Test http connectivity
+  get_url:
+    url: https://hub.docker.com
+    dest: /tmp/tests
+    timeout: 10
+    
+- name: Display all variables/facts known for a host
+  debug:
+    msg: 
+    - os is "{{ ansible_distribution }}:{{ ansible_distribution_version}}"

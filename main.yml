@@ -1,0 +1,12 @@
+- hosts: [vms]
+  become: true
+  vars: 
+    packages:
+      - git
+      - wget
+      - curl
+      - jq
+  roles:
+     - checks
+     - servInit
+     - docker
