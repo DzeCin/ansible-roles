@@ -1,0 +1,5 @@
+.idea/
+test-azure/.terraform.lock.hcl
+test-azure/.terraform/
+test-azure/terraform.tfstate
+test-azure/terraform.tfstate.backup
