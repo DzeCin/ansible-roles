@@ -1,0 +1,94 @@
+---
+# tasks file for nginx
+- debug:
+    msg: "{{ansible_os_family}}"
+
+- name: Install nginx without docker
+  apt:
+      update_cache: yes
+      name: nginx
+      state: latest
+  when: (docker is falsy) and (ansible_os_family == "Debian")
+
+- name: Install nginx without docker
+  yum:
+    name: nginx
+    state: latest
+  when: (docker is falsy) and (ansible_os_family == "RedHat")
+
+- name: Stop service nginx, if started
+  ansible.builtin.service:
+    name: nginx
+    state: stopped
+  when: docker is falsy
+
+- name: Enable service nginx, and not touch the state
+  ansible.builtin.service:
+    name: nginx
+    enabled: yes
+  when: docker is falsy
+
+- name: Make sure www-data exists
+  user:
+    name: www-data
+    group: www-data
+    state: present
+
+- name: Make sure nginx dir exists
+  ansible.builtin.file:
+    path: /etc/nginx
+    state: directory
+    mode: '0755'
+
+- name: Make sure sites-available dir exists
+  file:
+    path: /etc/nginx/sites-available
+    state: directory
+    mode: '0755'
+
+- name: Make sure sites-enabled dir exists
+  file:
+    path: /etc/nginx/sites-enabled
+    state: directory
+    mode: '0755'
+
+- name: Make sure certs dir exists
+  file:
+    path: /etc/nginx/certs
+    state: directory
+    mode: '0755'
+
+- name: Copy global http conf file
+  copy:
+    src: ../files/nginxnossl.conf
+    dest: /etc/nginx/nginx.conf
+  when: enable_ssl is falsy
+
+- name: Copy global https conf file
+  copy:
+    src: ../files/nginxssl.conf
+    dest: /etc/nginx/nginx.conf
+  when: enable_ssl is truthy
+
+- name: Copy ssl cert
+  copy:
+     src: "{{ssl_certificate_path}}"
+     dest: /etc/nginx/certs/ssl.crt
+  when: enable_ssl is truthy
+
+- name: Copy ssl key
+  copy:
+     src: "{{ssl_key_path}}"
+     dest: /etc/nginx/certs/ssl.key
+  when: enable_ssl is truthy
+
+- name: Copy revproxy conf example conf file
+  copy:
+     src: ../files/revproxy-ex.conf
+     dest: /etc/nginx/sites-available/revproxy-ex.conf
+
+- name: Start service nginx
+  ansible.builtin.service:
+    name: nginx
+    state: started
+  when: docker is falsy

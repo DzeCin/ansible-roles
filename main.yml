@@ -6,7 +6,9 @@
       - wget
       - curl
       - jq
+    enable_ssl: False
   roles:
-     - checks
-     - servInit
-     - docker
+    # - checks
+    # - servInit
+    # - docker
+    - nginx

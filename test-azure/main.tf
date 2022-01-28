@@ -32,26 +32,27 @@ module "vms" {
         sku       = "16.04-LTS"
         version   = "latest"
       }
-    },
-
-    {
-      nic = {
-        name = "nic2"
-        ipconfname = "conf2"
-      }
-
-      pip = {
-        allocation_method = "Dynamic"
-      }
-
-      vm = {
-        name = "test2"
-        publisher = "debian"
-        offer     = "debian-10"
-        sku       = "10-gen2"
-        version   = "latest"
-      }
     }
+//  ,
+//
+//    {
+//      nic = {
+//        name = "nic2"
+//        ipconfname = "conf2"
+//      }
+//
+//      pip = {
+//        allocation_method = "Dynamic"
+//      }
+//
+//      vm = {
+//        name = "test2"
+//        publisher = "debian"
+//        offer     = "debian-10"
+//        sku       = "10-gen2"
+//        version   = "latest"
+//      }
+//    }
 
   ]
 }
