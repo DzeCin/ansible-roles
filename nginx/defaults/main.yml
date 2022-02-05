@@ -1,6 +1,5 @@
 ---
 # defaults file for nginx
-docker: False
 enable_ssl: True
 ssl_certificate_path: ../files/ssl.crt
 ssl_key_path: ../files/ssl.key

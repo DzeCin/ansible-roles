@@ -8,25 +8,23 @@
       update_cache: yes
       name: nginx
       state: latest
-  when: (docker is falsy) and (ansible_os_family == "Debian")
+  when: ansible_os_family == "Debian"
 
 - name: Install nginx without docker
   yum:
     name: nginx
     state: latest
-  when: (docker is falsy) and (ansible_os_family == "RedHat")
+  when: ansible_os_family == "RedHat"
 
 - name: Stop service nginx, if started
   ansible.builtin.service:
     name: nginx
     state: stopped
-  when: docker is falsy
 
 - name: Enable service nginx, and not touch the state
   ansible.builtin.service:
     name: nginx
     enabled: yes
-  when: docker is falsy
 
 - name: Make sure www-data exists
   user:
@@ -91,4 +89,3 @@
   ansible.builtin.service:
     name: nginx
     state: started
-  when: docker is falsy
