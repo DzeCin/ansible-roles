@@ -1,0 +1,37 @@
+---
+- name: Add the user 'jenkins' and generate ssh keys
+  ansible.builtin.user:
+    name: jenkins
+    shell: /bin/bash
+    generate_ssh_key: yes
+    ssh_key_bits: 2048
+    ssh_key_file: .ssh/id_rsa
+
+- name: Update apt cache and install java and other tools needed such as git
+  apt:
+    update_cache: yes
+    name: "{{ item }}"
+    state: present
+  loop:
+    - openjdk-11-jre
+    - git
+    - python3
+    - python3-pip
+    - rsync
+
+
+- name: install ansible with pip
+  command: "pip3 install ansible"
+
+- name: Add pub ssh key of master node to jenkins user
+  ansible.posix.authorized_key:
+    user: jenkins
+    state: present
+    key: "{{ lookup('file', 'ssh-key/id_rsa.pub') }}"
+  when: lookup('file', 'ssh-key/id_rsa.pub') | length > 0
+
+- name: get jenkins pub ssh key
+  command: "cat /home/jenkins/.ssh/id_rsa.pub"
+  register: sshWorker
+
+- debug: msg="the value of the id_rsa_worker.pub is {{ sshWorker.stdout }}"

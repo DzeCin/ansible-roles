@@ -1,0 +1,46 @@
+---
+# tasks file for jenkins
+- name: Download jenkins keyring file
+  get_url:
+    url: https://pkg.jenkins.io/debian-stable/jenkins.io.key
+    dest: /usr/share/keyrings/jenkins-keyring.asc
+
+- name: Add specified repository into sources list using specified filename
+  ansible.builtin.apt_repository:
+    repo: deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/
+    state: present
+    filename: jenkins.list
+
+- name: Update apt cache and install java and jenkins
+  apt:
+    update_cache: yes
+    name: "{{ item }}"
+    state: present
+  loop:
+      - openjdk-11-jre
+      - jenkins
+      - git
+
+- name: Start jenkins
+  ansible.builtin.systemd:
+    name: jenkins
+    state: started
+
+- name: Generate ssh key for Jenkins user
+  ansible.builtin.user:
+    name: jenkins
+    group: jenkins
+    generate_ssh_key: yes
+    ssh_key_bits: 2048
+    ssh_key_file: .ssh/id_rsa
+
+- name: get initialAdminPassword content
+  command: "cat /var/lib/jenkins/secrets/initialAdminPassword"
+  register: adminPassword
+
+- name: get jenkins pub ssh key
+  command: "cat /var/lib/jenkins/.ssh/id_rsa.pub"
+  register: sshMaster
+
+- debug: msg="the value of the initialAdminPassword is {{ adminPassword.stdout }}"
+- debug: msg="the value of the id_rsa.pub is {{ sshMaster.stdout }}"
